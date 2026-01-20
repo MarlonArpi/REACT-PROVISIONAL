@@ -1,23 +1,14 @@
-import { Typography, Box, TextField, Button, MenuItem, Container, Paper } from '@mui/material';
+import { Typography, Box, TextField, Button, Container, Paper } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPokemon } from '../services/pokemonService';
+import { createTrainer } from '../services/trainerService';
 
-const POKEMON_TYPES = [
-    { value: 'A', label: 'Agua' },
-    { value: 'F', label: 'Fuego' },
-    { value: 'P', label: 'Planta' },
-    { value: 'E', label: 'Eléctrico' },
-    { value: 'T', label: 'Tierra' },
-    { value: 'N', label: 'Normal' },
-];
-
-export default function PokemonForm() {
-    const [pokemonData, setPokemonData] = useState({
+export default function TrainerForm() {
+    const [trainerData, setTrainerData] = useState({
         name: '',
-        type: '',
-        weight: '',
-        height: '',
+        age: '',
+        level: '', 
+        birthday: '', 
         picture: null
     });
 
@@ -26,13 +17,13 @@ export default function PokemonForm() {
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (name === "picture") {
-            setPokemonData({
-                ...pokemonData,
+            setTrainerData({
+                ...trainerData,
                 picture: files[0]
             });
         } else {
-            setPokemonData({
-                ...pokemonData,
+            setTrainerData({
+                ...trainerData,
                 [name]: value
             });
         }
@@ -41,12 +32,18 @@ export default function PokemonForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createPokemon(pokemonData); 
-            alert("Pokémon creado exitosamente");
-            navigate('/');
+            const dataToSend = {
+                ...trainerData,
+                age: parseInt(trainerData.age),
+                level: parseInt(trainerData.level)
+            };
+            
+            await createTrainer(dataToSend); 
+            alert("Entrenador creado exitosamente");
+            navigate('/trainers'); 
         } catch (error) {
-            console.error("Error al crear el Pokémon:", error);
-            alert("Error al crear el Pokémon");
+            console.error("Error al crear el entrenador:", error);
+            alert("Error al crear el entrenador");
         }
     };
 
@@ -54,49 +51,50 @@ export default function PokemonForm() {
         <Container maxWidth="sm">
             <Box sx={{ mt: 4, mb: 4 }}>
                 <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                    Formulario de Pokémon
+                    Formulario de Entrenador
                 </Typography>
                 
                 <Paper elevation={3} sx={{ p: 4, mt: 2 }}>
                     <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <TextField 
-                            label="Nombre" 
+                            label="Nombre Completo" 
                             variant="outlined" 
                             name='name' 
+                            value={trainerData.name}
                             required 
                             onChange={handleChange}
                             fullWidth
                         />
-                        <TextField
-                            select
-                            label="Tipo"
-                            name="type"
-                            variant="outlined"
-                            value={pokemonData.type}
-                            onChange={handleChange}
-                            required
-                            fullWidth
-                        >
-                            {POKEMON_TYPES.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+
                         <TextField 
-                            label="Peso" 
+                            label="Edad" 
                             variant="outlined" 
                             type="number" 
-                            name='weight' 
+                            name='age' 
+                            value={trainerData.age}
                             required 
                             onChange={handleChange}
                             fullWidth
                         />
+
                         <TextField 
-                            label="Altura" 
+                            label="Nivel (Número)" 
                             variant="outlined" 
-                            type="number" 
-                            name='height' 
+                            type="number"
+                            name='level' 
+                            value={trainerData.level}
+                            required 
+                            onChange={handleChange}
+                            fullWidth
+                        />
+
+                        <TextField 
+                            label="Fecha de Nacimiento" 
+                            variant="outlined" 
+                            type="date" 
+                            name='birthday' 
+                            value={trainerData.birthday}
+                            InputLabelProps={{ shrink: true }}
                             required 
                             onChange={handleChange}
                             fullWidth
@@ -107,7 +105,7 @@ export default function PokemonForm() {
                             component="label"
                             fullWidth
                         >
-                            {pokemonData.picture ? `Archivo: ${pokemonData.picture.name}` : "Subir Foto del Pokémon"}
+                            {trainerData.picture ? `Archivo: ${trainerData.picture.name}` : "Subir Foto del Entrenador  "}
                             <input 
                                 type="file" 
                                 name="picture" 
@@ -119,7 +117,7 @@ export default function PokemonForm() {
                         </Button>
 
                         <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
-                            Guardar Pokémon
+                            Guardar Entrenador
                         </Button>
                     </Box>
                 </Paper>

@@ -1,26 +1,21 @@
-import { Card, CardActions, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
-const API_MEDIA_URL = import.meta.env.VITE_API_MEDIA_URL;
+export default function PokemonCard({ pokemon }) {
+  return (
+    <Card sx={{ height: "100%" }}>
+      <CardMedia
+        component="img"
+        height="200"
+        image={pokemon.picture}
+        alt={pokemon.name}
+      />
 
-export default function PokemonCard ({ pokemon }) {
-    const pokemonImageUrl = `${API_MEDIA_URL}${pokemon.picture}`;
-    return (
-        <Card>
-            <CardMedia
-                component="img"
-                height= {200}
-                image={pokemonImageUrl}
-                alt ={pokemon.name}
-            />
-            <CardContent>
-                <Typography variant="h5" component="div">
-                    {pokemon.name}
-                </Typography>
-                <CardActions>
-                    <Button size="small">Ver detalles</Button>
-                </CardActions>
-            </CardContent>
-                
-        </Card>
-    );
+      <CardContent sx={{ textAlign: "center" }}>
+        <Typography variant="h5">{pokemon.name}</Typography>
+        <Typography variant="body2">
+          Tipo: {pokemon.type}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
 }
